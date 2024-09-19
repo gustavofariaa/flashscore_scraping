@@ -1,9 +1,9 @@
 import { BASE_URL } from "../../constants/index.js";
 
-export const getMatchIdList = async (browser, country, league) => {
+export const getMatchIdList = async (browser, country, league, mode) => {
   const page = await browser.newPage();
 
-  const url = `${BASE_URL}/football/${country}/${league}/results/`;
+  const url = `${BASE_URL}/football/${country}/${league}/${mode}/`;
   await page.goto(url);
 
   while (true) {
@@ -33,7 +33,7 @@ export const getMatchIdList = async (browser, country, league) => {
   return matchIdList;
 };
 
-export const getMatchData = async (browser, matchId) => {
+export const getMatchData = async (browser, matchId, mode) => {
   const page = await browser.newPage();
 
   const url = `${BASE_URL}/match/${matchId}/#/match-summary/match-statistics/0`;
@@ -92,6 +92,11 @@ export const getMatchData = async (browser, matchId) => {
       )?.[1]?.innerText,
     })),
   }));
+
+  if (mode == 'fixtures'){
+    delete data.result;
+    delete data.statistics;
+  }
 
   await page.close();
   return data;
